@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">AeroFocus</string>
+
+    <!-- Navigation -->
+    <string name="nav_departure">Departure</string>
+    <string name="nav_logbook">Logbook</string>
+
+    <!-- Departure Screen -->
+    <string name="total_miles_flown">Total Miles Flown</string>
+    <string name="book_a_flight">Book a Flight</string>
+    <string name="no_destinations_unlocked">Start your first flight to unlock destinations!</string>
+
+    <!-- Pre-Flight Screen -->
+    <string name="pre_flight_title">Pre-Flight Ritual</string>
+    <string name="select_duration">Set Flight Duration</string>
+    <string name="select_destination">Select Destination</string>
+    <string name="focus_tag_hint">What are you focusing on?</string>
+    <string name="generate_ticket">Generate Ticket</string>
+    <string name="swipe_to_board">Swipe to Tear &amp; Board</string>
+    <string name="minutes_label">min</string>
+
+    <!-- In-Flight Screen -->
+    <string name="starlit_window">Starlit Window</string>
+    <string name="flight_map">Flight Map</string>
+    <string name="zen_mode">Zen Mode</string>
+    <string name="emergency_landing">Emergency Landing</string>
+    <string name="emergency_landing_confirm">Long press to confirm emergency landing</string>
+    <string name="flight_paused">Flight Paused</string>
+
+    <!-- Arrival Screen -->
+    <string name="touchdown_message">Touchdown in %1$s!</string>
+    <string name="miles_earned">You earned %1$d miles</string>
+    <string name="return_to_lounge">Return to Departure Lounge</string>
+    <string name="emergency_landed">Emergency Landing</string>
+    <string name="flight_aborted">Flight was aborted. No miles earned.</string>
+
+    <!-- Logbook -->
+    <string name="logbook_title">Flight Logbook</string>
+    <string name="no_flights_yet">No flights logged yet. Book your first flight!</string>
+
+    <!-- Notification -->
+    <string name="timer_notification_channel">Flight Timer</string>
+    <string name="timer_notification_title">En Route to %1$s</string>
+    <string name="timer_notification_text">%1$s remaining</string>
+
+    <!-- Audio Tracks -->
+    <string name="audio_cabin">Cabin</string>
+    <string name="audio_rain">Rain</string>
+    <string name="audio_forest">Forest</string>
+</resources>
