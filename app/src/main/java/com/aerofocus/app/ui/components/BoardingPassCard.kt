@@ -1,10 +1,12 @@
 package com.aerofocus.app.ui.components
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,18 +19,21 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AirplanemodeActive
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Flight
 import androidx.compose.material.icons.filled.FlightTakeoff
-import androidx.compose.material.icons.filled.FlightLand
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
@@ -36,13 +41,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -50,11 +55,11 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aerofocus.app.ui.theme.DeepNight
-import com.aerofocus.app.ui.theme.MutedSunset
 import com.aerofocus.app.ui.theme.SurfaceDark
 import com.aerofocus.app.ui.theme.TextPrimary
 import com.aerofocus.app.ui.theme.TextSecondary
 import com.aerofocus.app.ui.theme.WarmGlow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -64,18 +69,11 @@ import kotlin.math.roundToInt
  * Features:
  * - Header with flight icon and airline branding
  * - Departure ↔ Destination with IATA codes
- * - Duration, focus tag, and date
+ * - Duration, focus tag, and class
  * - Dashed "tear here" perforated line
- * - **Swipe down to tear & board** gesture that triggers the timer start
- *
- * @param departureCode IATA code of departure city.
- * @param departureName Full name of departure city.
- * @param destinationCode IATA code of destination.
- * @param destinationName Full name of destination.
- * @param durationMinutes Selected focus duration.
- * @param focusTag What the user is focusing on.
- * @param onSwipeToBoardComplete Called when the swipe gesture completes.
- * @param modifier Modifier.
+ * - **Horizontal "Slide to Board"** — drag the thumb to the far right
+ * - On threshold reached: tear/consume animation (card splits and
+ *   slides away), then fires [onSwipeToBoardComplete]
  */
 @Composable
 fun BoardingPassCard(
@@ -89,10 +87,44 @@ fun BoardingPassCard(
     modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
+
+    // ── Slide state ─────────────────────────────────────────────
+    var trackWidthPx by remember { mutableFloatStateOf(1f) }
+    val thumbSizeDp = 54.dp
     val density = LocalDensity.current
-    val tearThreshold = with(density) { 200.dp.toPx() }
-    var dragOffset by remember { mutableFloatStateOf(0f) }
-    val tearProgress = (dragOffset / tearThreshold).coerceIn(0f, 1f)
+    val thumbSizePx = with(density) { thumbSizeDp.toPx() }
+    var dragOffsetX by remember { mutableFloatStateOf(0f) }
+    val maxDrag = (trackWidthPx - thumbSizePx).coerceAtLeast(1f)
+    val slideProgress = (dragOffsetX / maxDrag).coerceIn(0f, 1f)
+
+    // ── Tear animation state ────────────────────────────────────
+    var hasBoarded by remember { mutableStateOf(false) }
+    val tearAnimatable = remember { Animatable(0f) }
+
+    // Animated tear progress for the split/consume effect
+    val topHalfOffsetY by animateFloatAsState(
+        targetValue = if (hasBoarded) -800f else 0f,
+        animationSpec = tween(500, easing = FastOutSlowInEasing),
+        label = "topTear"
+    )
+    val bottomHalfOffsetY by animateFloatAsState(
+        targetValue = if (hasBoarded) 800f else 0f,
+        animationSpec = tween(500, easing = FastOutSlowInEasing),
+        label = "bottomTear"
+    )
+    val tearAlpha by animateFloatAsState(
+        targetValue = if (hasBoarded) 0f else 1f,
+        animationSpec = tween(400),
+        label = "tearAlpha"
+    )
+
+    // Fire callback after tear animation completes
+    LaunchedEffect(hasBoarded) {
+        if (hasBoarded) {
+            delay(550) // Wait for tear animation to finish
+            onSwipeToBoardComplete()
+        }
+    }
 
     Box(
         modifier = modifier
@@ -104,182 +136,277 @@ fun BoardingPassCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .offset { IntOffset(0, dragOffset.roundToInt()) }
-                .clip(RoundedCornerShape(24.dp))
-                .background(SurfaceDark)
-                .padding(24.dp),
+                .alpha(tearAlpha),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // ── Header ──────────────────────────────────────────
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth()
+            // ═══════════════════════════════════════════════════
+            // TOP HALF — slides UP on tear
+            // ═══════════════════════════════════════════════════
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .offset { IntOffset(0, topHalfOffsetY.roundToInt()) }
+                    .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                    .background(SurfaceDark)
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Icon(
-                    imageVector = Icons.Default.Flight,
-                    contentDescription = null,
-                    tint = WarmGlow,
-                    modifier = Modifier.size(28.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "AEROFOCUS AIRLINES",
-                    style = MaterialTheme.typography.labelLarge,
-                    color = WarmGlow,
-                    letterSpacing = 3.sp
-                )
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // ── Route: DEP → DEST ───────────────────────────────
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Departure
-                Column(horizontalAlignment = Alignment.Start) {
-                    Text(
-                        text = departureCode,
-                        style = MaterialTheme.typography.headlineLarge,
-                        color = TextPrimary
+                // ── Header ──────────────────────────────────────
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Flight,
+                        contentDescription = null,
+                        tint = WarmGlow,
+                        modifier = Modifier.size(28.dp)
                     )
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = departureName,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextSecondary
+                        text = "AEROFOCUS AIRLINES",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = WarmGlow,
+                        letterSpacing = 3.sp
                     )
                 }
 
-                // Plane path
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.weight(1f)
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // ── Route: DEP → DEST ───────────────────────────
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.AirplanemodeActive,
-                        contentDescription = null,
-                        tint = WarmGlow,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    // Dashed flight path line
-                    Canvas(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(2.dp)
-                            .padding(horizontal = 8.dp)
+                    Column(horizontalAlignment = Alignment.Start) {
+                        Text(
+                            text = departureCode,
+                            style = MaterialTheme.typography.headlineLarge,
+                            color = TextPrimary
+                        )
+                        Text(
+                            text = departureName,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = TextSecondary
+                        )
+                    }
+
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.weight(1f)
                     ) {
-                        drawLine(
-                            color = TextSecondary,
-                            start = Offset(0f, size.height / 2),
-                            end = Offset(size.width, size.height / 2),
-                            pathEffect = PathEffect.dashPathEffect(
-                                floatArrayOf(8f, 6f), 0f
-                            ),
-                            strokeWidth = 2f
+                        Icon(
+                            imageVector = Icons.Default.AirplanemodeActive,
+                            contentDescription = null,
+                            tint = WarmGlow,
+                            modifier = Modifier.size(24.dp)
+                        )
+                        Canvas(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(2.dp)
+                                .padding(horizontal = 8.dp)
+                        ) {
+                            drawLine(
+                                color = TextSecondary,
+                                start = Offset(0f, size.height / 2),
+                                end = Offset(size.width, size.height / 2),
+                                pathEffect = PathEffect.dashPathEffect(
+                                    floatArrayOf(8f, 6f), 0f
+                                ),
+                                strokeWidth = 2f
+                            )
+                        }
+                    }
+
+                    Column(horizontalAlignment = Alignment.End) {
+                        Text(
+                            text = destinationCode,
+                            style = MaterialTheme.typography.headlineLarge,
+                            color = TextPrimary
+                        )
+                        Text(
+                            text = destinationName,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = TextSecondary
                         )
                     }
                 }
 
-                // Destination
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(
-                        text = destinationCode,
-                        style = MaterialTheme.typography.headlineLarge,
-                        color = TextPrimary
-                    )
-                    Text(
-                        text = destinationName,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = TextSecondary
-                    )
+                Spacer(modifier = Modifier.height(32.dp))
+
+                // ── Flight Details ──────────────────────────────
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceEvenly
+                ) {
+                    DetailItem(label = "DURATION", value = "${durationMinutes}m")
+                    DetailItem(label = "CLASS", value = "FOCUS")
+                    DetailItem(label = "TAG", value = focusTag.uppercase().take(8))
                 }
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
-
-            // ── Flight Details ───────────────────────────────────
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                DetailItem(label = "DURATION", value = "${durationMinutes}m")
-                DetailItem(label = "CLASS", value = "FOCUS")
-                DetailItem(label = "TAG", value = focusTag.uppercase().take(8))
-            }
-
-            Spacer(modifier = Modifier.height(28.dp))
-
-            // ── Perforated tear line ────────────────────────────
+            // ═══════════════════════════════════════════════════
+            // PERFORATED TEAR LINE (between halves)
+            // ═══════════════════════════════════════════════════
             Canvas(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(2.dp)
+                    .height(3.dp)
             ) {
                 drawLine(
-                    color = TextSecondary.copy(alpha = 0.5f),
+                    color = WarmGlow.copy(alpha = 0.4f),
                     start = Offset(0f, size.height / 2),
                     end = Offset(size.width, size.height / 2),
                     pathEffect = PathEffect.dashPathEffect(
-                        floatArrayOf(4f, 4f), 0f
+                        floatArrayOf(6f, 4f), 0f
                     ),
                     strokeWidth = 2f
                 )
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
-
-            // ── Swipe to Board ───────────────────────────────────
-            Box(
+            // ═══════════════════════════════════════════════════
+            // BOTTOM HALF — slides DOWN on tear, contains slider
+            // ═══════════════════════════════════════════════════
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp)
-                    .clip(RoundedCornerShape(50))
-                    .background(
-                        WarmGlow.copy(
-                            alpha = 0.15f + (tearProgress * 0.85f)
-                        )
-                    )
-                    .pointerInput(Unit) {
-                        detectVerticalDragGestures(
-                            onDragEnd = {
-                                if (tearProgress >= 1f) {
-                                    onSwipeToBoardComplete()
-                                } else {
-                                    // Snap back
-                                    scope.launch {
-                                        dragOffset = 0f
-                                    }
-                                }
-                            },
-                            onVerticalDrag = { change, dragAmount ->
-                                change.consume()
-                                dragOffset = (dragOffset + dragAmount).coerceAtLeast(0f)
-                            }
-                        )
-                    },
-                contentAlignment = Alignment.Center
+                    .offset { IntOffset(0, bottomHalfOffsetY.roundToInt()) }
+                    .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
+                    .background(SurfaceDark)
+                    .padding(horizontal = 24.dp, vertical = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
+                // ── "Slide to Board" Track ──────────────────────
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(thumbSizeDp)
+                        .clip(RoundedCornerShape(50))
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(
+                                    WarmGlow.copy(alpha = 0.08f),
+                                    WarmGlow.copy(alpha = 0.08f + slideProgress * 0.25f)
+                                )
+                            )
+                        )
+                        .onSizeChanged { trackWidthPx = it.width.toFloat() }
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.FlightTakeoff,
-                        contentDescription = null,
-                        tint = if (tearProgress > 0.5f) DeepNight else WarmGlow,
-                        modifier = Modifier.size(20.dp)
+                    // Chevron hints (fade out as you drag)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .alpha((1f - slideProgress * 2f).coerceIn(0f, 0.5f))
+                            .padding(start = thumbSizeDp + 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        repeat(3) { i ->
+                            Icon(
+                                imageVector = Icons.Default.ChevronRight,
+                                contentDescription = null,
+                                tint = WarmGlow.copy(alpha = 0.3f - i * 0.08f),
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "SLIDE TO BOARD",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = WarmGlow.copy(alpha = 0.5f),
+                            letterSpacing = 2.sp
+                        )
+                    }
+
+                    // Progress fill behind thumb
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth(slideProgress.coerceAtLeast(0.01f))
+                            .height(thumbSizeDp)
+                            .clip(RoundedCornerShape(50))
+                            .background(
+                                Brush.horizontalGradient(
+                                    colors = listOf(
+                                        WarmGlow.copy(alpha = 0.15f),
+                                        WarmGlow.copy(alpha = 0.35f)
+                                    )
+                                )
+                            )
                     )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = if (tearProgress >= 1f) "BOARDING!" else "↓ SWIPE DOWN TO BOARD",
-                        style = MaterialTheme.typography.labelLarge,
-                        color = if (tearProgress > 0.5f) DeepNight else WarmGlow,
-                        letterSpacing = 1.sp
-                    )
+
+                    // Draggable thumb
+                    Box(
+                        modifier = Modifier
+                            .offset { IntOffset(dragOffsetX.roundToInt(), 0) }
+                            .size(thumbSizeDp)
+                            .clip(CircleShape)
+                            .background(
+                                if (slideProgress >= 1f) WarmGlow
+                                else WarmGlow.copy(alpha = 0.85f + slideProgress * 0.15f)
+                            )
+                            .pointerInput(hasBoarded) {
+                                if (hasBoarded) return@pointerInput
+                                detectHorizontalDragGestures(
+                                    onDragEnd = {
+                                        if (slideProgress >= 0.95f) {
+                                            // Threshold reached → trigger boarding!
+                                            hasBoarded = true
+                                        } else {
+                                            // Snap back with animation
+                                            scope.launch {
+                                                val snapBack = Animatable(dragOffsetX)
+                                                snapBack.animateTo(
+                                                    targetValue = 0f,
+                                                    animationSpec = tween(
+                                                        300,
+                                                        easing = FastOutSlowInEasing
+                                                    )
+                                                ) {
+                                                    dragOffsetX = value
+                                                }
+                                            }
+                                        }
+                                    },
+                                    onHorizontalDrag = { change, dragAmount ->
+                                        change.consume()
+                                        dragOffsetX = (dragOffsetX + dragAmount)
+                                            .coerceIn(0f, maxDrag)
+                                    }
+                                )
+                            },
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = if (slideProgress >= 0.95f)
+                                Icons.Default.FlightTakeoff
+                            else Icons.Default.FlightTakeoff,
+                            contentDescription = "Board",
+                            tint = DeepNight,
+                            modifier = Modifier
+                                .size(24.dp)
+                                .scale(1f + slideProgress * 0.2f)
+                        )
+                    }
                 }
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                // Status text
+                Text(
+                    text = when {
+                        hasBoarded -> "✈️ BOARDING COMPLETE"
+                        slideProgress >= 0.95f -> "RELEASE TO BOARD!"
+                        slideProgress > 0.1f -> "${(slideProgress * 100).toInt()}%"
+                        else -> "Drag the plane to board your flight"
+                    },
+                    style = MaterialTheme.typography.labelSmall,
+                    color = if (hasBoarded || slideProgress >= 0.95f) WarmGlow else TextSecondary,
+                    textAlign = TextAlign.Center,
+                    letterSpacing = 1.sp
+                )
             }
         }
     }
