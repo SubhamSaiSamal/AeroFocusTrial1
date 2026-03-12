@@ -1,0 +1,3 @@
+-keep,allowobfuscation,allowshrinking class com.aerofocus.app.ui.viewmodel.FlightViewModel
+-keep,allowobfuscation,allowshrinking class com.aerofocus.app.ui.viewmodel.FlightViewModel
+-keep,allowobfuscation,allowshrinking class com.aerofocus.app.ui.viewmodel.LogbookViewModel

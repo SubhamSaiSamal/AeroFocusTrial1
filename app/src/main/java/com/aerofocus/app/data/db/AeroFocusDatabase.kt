@@ -58,16 +58,16 @@ abstract class AeroFocusDatabase : RoomDatabase() {
                 cityName = "Mumbai",
                 latitude = 19.0760,
                 longitude = 72.8777,
-                requiredMiles = 25,
-                isUnlocked = false
+                requiredMiles = 0,      // Starter route — unlocked by default
+                isUnlocked = true
             ),
             UnlockedDestinationEntity(
                 iataCode = "BKK",
                 cityName = "Bangkok",
                 latitude = 13.7563,
                 longitude = 100.5018,
-                requiredMiles = 60,
-                isUnlocked = false
+                requiredMiles = 0,      // Starter route — unlocked by default
+                isUnlocked = true
             ),
             UnlockedDestinationEntity(
                 iataCode = "SIN",

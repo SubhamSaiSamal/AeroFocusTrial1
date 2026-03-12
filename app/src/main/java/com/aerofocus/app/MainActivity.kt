@@ -5,8 +5,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+import com.aerofocus.app.ui.navigation.AeroFocusNavGraph
+import com.aerofocus.app.ui.theme.AeroFocusTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 /**
@@ -21,10 +24,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
-            // Theme and NavGraph will be wired in Phase 6.
-            // For now, a placeholder Surface confirms the build compiles.
-            Surface(modifier = Modifier.fillMaxSize()) {
-                // TODO: AeroFocusTheme { AeroFocusNavGraph() }
+            AeroFocusTheme {
+                AeroFocusNavGraph()
             }
         }
     }
