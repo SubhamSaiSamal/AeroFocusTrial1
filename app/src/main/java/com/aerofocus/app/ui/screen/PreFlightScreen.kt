@@ -61,15 +61,11 @@ import com.aerofocus.app.ui.viewmodel.TimerViewModel
 import com.aerofocus.app.util.Constants
 
 /**
- * Screen 2: Pre-Flight Ritual (Setup & Boarding Pass).
+ * Screen 2: Pre-Flight Ritual.
  *
- * Flow:
- * 1. User sets duration via [CircularDurationSlider]
- * 2. Selects destination from dropdown (unlocked + locked destinations shown)
- * 3. Picks a focus tag from chips
- * 4. Taps "Generate Ticket"
- * 5. BoardingPass overlay appears
- * 6. "Swipe to Tear & Board" starts the timer service → navigates out
+ * NAVIGATION: When the boarding pass slide completes, this screen
+ * calls [TimerViewModel.startFlight] and then [onBoardComplete]
+ * directly and synchronously — no LaunchedEffect indirection.
  */
 @Composable
 fun PreFlightScreen(
@@ -87,10 +83,7 @@ fun PreFlightScreen(
     var showBoardingPass by remember { mutableStateOf(false) }
     var showDestDropdown by remember { mutableStateOf(false) }
 
-    // Find the departure destination entity
     val departureDest = allDestinations.find { it.iataCode == departureCity }
-
-    // Selectable destinations: all except the departure city
     val selectableDestinations = allDestinations.filter { it.iataCode != departureCity }
 
     Box(
@@ -98,7 +91,6 @@ fun PreFlightScreen(
             .fillMaxSize()
             .background(DeepNight)
     ) {
-        // ── Main Setup Form ─────────────────────────────────────
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -218,7 +210,6 @@ fun PreFlightScreen(
                                 }
                             },
                             onClick = {
-                                // Only allow selecting unlocked destinations
                                 if (isUnlocked) {
                                     flightViewModel.setDestination(dest)
                                     showDestDropdown = false
@@ -320,12 +311,14 @@ fun PreFlightScreen(
                     durationMinutes = duration,
                     focusTag = focusTag,
                     onSwipeToBoardComplete = {
-                        // Start the flight!
+                        // ★ DIRECT — no state, no LaunchedEffect, no indirection ★
+                        // 1. Boot the foreground timer service
                         timerViewModel.startFlight(
                             durationMinutes = duration,
                             destinationName = dest.cityName,
                             focusTag = focusTag
                         )
+                        // 2. Navigate to InFlight
                         onBoardComplete()
                     }
                 )

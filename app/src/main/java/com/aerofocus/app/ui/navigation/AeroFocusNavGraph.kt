@@ -95,9 +95,10 @@ fun AeroFocusNavGraph() {
                     flightViewModel = flightViewModel,
                     timerViewModel = timerViewModel,
                     onBoardComplete = {
-                        navController.navigate(Constants.ROUTE_IN_FLIGHT) {
-                            popUpTo(Constants.ROUTE_PRE_FLIGHT) { inclusive = true }
-                        }
+                        // ★ SIMPLE navigate — no popUpTo ★
+                        // popUpTo was destroying the composable scope mid-callback,
+                        // swallowing the navigation. Just push InFlight on top.
+                        navController.navigate(Constants.ROUTE_IN_FLIGHT)
                     },
                     onBack = { navController.popBackStack() }
                 )

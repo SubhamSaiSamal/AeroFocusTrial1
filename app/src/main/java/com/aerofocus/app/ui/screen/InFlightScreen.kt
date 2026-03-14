@@ -12,10 +12,8 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -43,6 +41,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -90,7 +89,6 @@ import kotlin.random.Random
  *
  * Bottom: Frosted-glass bar with audio controls + Emergency Landing.
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun InFlightScreen(
     timerViewModel: TimerViewModel,
@@ -106,17 +104,32 @@ fun InFlightScreen(
     val progress = timerViewModel.getProgressFraction()
     val formattedTime = FlightTimerService.formatMillisToHHMMSS(remainingMillis)
 
-    // Handle timer completion or stop
+    // ── CRITICAL: Only navigate on COMPLETED/STOPPED after timer was RUNNING ──
+    // The companion FlightTimerService._timerState might still be stale
+    // (STOPPED/IDLE from a previous session) when this screen first composes.
+    // startForegroundService() is ASYNC — the service intent hasn't been
+    // processed yet. If we react to the initial STOPPED value, we'd
+    // immediately call onFlightComplete → navigate to Arrival → bounce
+    // back to Departure. The fix: track whether we've ever seen RUNNING.
+    var hasBeenRunning by remember { mutableStateOf(false) }
+
     LaunchedEffect(timerState) {
         when (timerState) {
+            TimerState.RUNNING -> {
+                hasBeenRunning = true
+            }
             TimerState.COMPLETED -> {
-                val miles = timerViewModel.recordSuccessfulLanding()
-                onFlightComplete(destinationName, miles, true)
+                if (hasBeenRunning) {
+                    val miles = timerViewModel.recordSuccessfulLanding()
+                    onFlightComplete(destinationName, miles, true)
+                }
             }
             TimerState.STOPPED -> {
-                onFlightComplete(destinationName, 0, false)
+                if (hasBeenRunning) {
+                    onFlightComplete(destinationName, 0, false)
+                }
             }
-            else -> { /* Running / Paused / Idle — no navigation */ }
+            else -> { /* IDLE, PAUSED — no navigation */ }
         }
     }
 
@@ -196,15 +209,13 @@ fun InFlightScreen(
                     modifier = Modifier
                         .clip(RoundedCornerShape(20.dp))
                         .background(SurfaceDark.copy(alpha = 0.5f))
-                        .combinedClickable(
-                            onClick = {
+                        .clickable {
                                 if (timerState == TimerState.PAUSED) {
                                     timerViewModel.resumeFlight()
                                 } else {
                                     timerViewModel.pauseFlight()
                                 }
-                            }
-                        )
+                        }
                         .padding(horizontal = 24.dp, vertical = 8.dp)
                 )
             }
@@ -233,10 +244,7 @@ fun InFlightScreen(
                     .padding(horizontal = 16.dp, vertical = 8.dp)
                     .clip(RoundedCornerShape(12.dp))
                     .background(MutedSunset.copy(alpha = 0.1f))
-                    .combinedClickable(
-                        onClick = { /* Single tap does nothing — long press required */ },
-                        onLongClick = { timerViewModel.emergencyLand() }
-                    )
+                    .clickable { timerViewModel.emergencyLand() }
                     .padding(vertical = 12.dp),
                 contentAlignment = Alignment.Center
             ) {

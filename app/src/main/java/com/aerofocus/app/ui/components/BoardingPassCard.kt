@@ -44,7 +44,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
@@ -64,16 +63,12 @@ import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
 /**
- * Full-screen boarding pass card with aviation-themed design.
+ * Full-screen boarding pass with horizontal "Slide to Board" gesture.
  *
- * Features:
- * - Header with flight icon and airline branding
- * - Departure ↔ Destination with IATA codes
- * - Duration, focus tag, and class
- * - Dashed "tear here" perforated line
- * - **Horizontal "Slide to Board"** — drag the thumb to the far right
- * - On threshold reached: tear/consume animation (card splits and
- *   slides away), then fires [onSwipeToBoardComplete]
+ * When the thumb reaches the far right end (~95%), the callback fires
+ * AUTOMATICALLY during the drag — no "release" step needed. A brief
+ * tear animation plays (card splits and slides away) before the
+ * callback navigates to the next screen.
  */
 @Composable
 fun BoardingPassCard(
@@ -87,41 +82,41 @@ fun BoardingPassCard(
     modifier: Modifier = Modifier
 ) {
     val scope = rememberCoroutineScope()
+    val density = LocalDensity.current
 
     // ── Slide state ─────────────────────────────────────────────
     var trackWidthPx by remember { mutableFloatStateOf(1f) }
     val thumbSizeDp = 54.dp
-    val density = LocalDensity.current
     val thumbSizePx = with(density) { thumbSizeDp.toPx() }
     var dragOffsetX by remember { mutableFloatStateOf(0f) }
     val maxDrag = (trackWidthPx - thumbSizePx).coerceAtLeast(1f)
+    // slideProgress for UI rendering only (recomputes each frame)
     val slideProgress = (dragOffsetX / maxDrag).coerceIn(0f, 1f)
 
-    // ── Tear animation state ────────────────────────────────────
+    // ── Boarding state ──────────────────────────────────────────
     var hasBoarded by remember { mutableStateOf(false) }
-    val tearAnimatable = remember { Animatable(0f) }
 
-    // Animated tear progress for the split/consume effect
-    val topHalfOffsetY by animateFloatAsState(
-        targetValue = if (hasBoarded) -800f else 0f,
-        animationSpec = tween(500, easing = FastOutSlowInEasing),
+    // Tear animation: top half slides up, bottom half slides down
+    val topTearOffset by animateFloatAsState(
+        targetValue = if (hasBoarded) -600f else 0f,
+        animationSpec = tween(400, easing = FastOutSlowInEasing),
         label = "topTear"
     )
-    val bottomHalfOffsetY by animateFloatAsState(
-        targetValue = if (hasBoarded) 800f else 0f,
-        animationSpec = tween(500, easing = FastOutSlowInEasing),
+    val bottomTearOffset by animateFloatAsState(
+        targetValue = if (hasBoarded) 600f else 0f,
+        animationSpec = tween(400, easing = FastOutSlowInEasing),
         label = "bottomTear"
     )
-    val tearAlpha by animateFloatAsState(
+    val cardAlpha by animateFloatAsState(
         targetValue = if (hasBoarded) 0f else 1f,
-        animationSpec = tween(400),
-        label = "tearAlpha"
+        animationSpec = tween(350),
+        label = "cardAlpha"
     )
 
-    // Fire callback after tear animation completes
+    // Fire navigation callback AFTER the tear animation finishes
     LaunchedEffect(hasBoarded) {
         if (hasBoarded) {
-            delay(550) // Wait for tear animation to finish
+            delay(450) // let tear animation play
             onSwipeToBoardComplete()
         }
     }
@@ -136,22 +131,22 @@ fun BoardingPassCard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .alpha(tearAlpha),
+                .alpha(cardAlpha),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // ═══════════════════════════════════════════════════
-            // TOP HALF — slides UP on tear
+            // TOP HALF — ticket info (slides UP on tear)
             // ═══════════════════════════════════════════════════
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .offset { IntOffset(0, topHalfOffsetY.roundToInt()) }
+                    .offset { IntOffset(0, topTearOffset.roundToInt()) }
                     .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                     .background(SurfaceDark)
                     .padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // ── Header ──────────────────────────────────────
+                // Header
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
@@ -174,7 +169,7 @@ fun BoardingPassCard(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // ── Route: DEP → DEST ───────────────────────────
+                // Route
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
@@ -237,7 +232,7 @@ fun BoardingPassCard(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // ── Flight Details ──────────────────────────────
+                // Flight Details
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly
@@ -248,9 +243,7 @@ fun BoardingPassCard(
                 }
             }
 
-            // ═══════════════════════════════════════════════════
-            // PERFORATED TEAR LINE (between halves)
-            // ═══════════════════════════════════════════════════
+            // Perforated tear line
             Canvas(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -268,18 +261,18 @@ fun BoardingPassCard(
             }
 
             // ═══════════════════════════════════════════════════
-            // BOTTOM HALF — slides DOWN on tear, contains slider
+            // BOTTOM HALF — slider (slides DOWN on tear)
             // ═══════════════════════════════════════════════════
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .offset { IntOffset(0, bottomHalfOffsetY.roundToInt()) }
+                    .offset { IntOffset(0, bottomTearOffset.roundToInt()) }
                     .clip(RoundedCornerShape(bottomStart = 24.dp, bottomEnd = 24.dp))
                     .background(SurfaceDark)
                     .padding(horizontal = 24.dp, vertical = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // ── "Slide to Board" Track ──────────────────────
+                // Slide track
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -295,7 +288,7 @@ fun BoardingPassCard(
                         )
                         .onSizeChanged { trackWidthPx = it.width.toFloat() }
                 ) {
-                    // Chevron hints (fade out as you drag)
+                    // Chevron hints (fade as you drag)
                     Row(
                         modifier = Modifier
                             .fillMaxSize()
@@ -321,7 +314,7 @@ fun BoardingPassCard(
                         )
                     }
 
-                    // Progress fill behind thumb
+                    // Progress fill
                     Box(
                         modifier = Modifier
                             .fillMaxWidth(slideProgress.coerceAtLeast(0.01f))
@@ -337,52 +330,58 @@ fun BoardingPassCard(
                             )
                     )
 
-                    // Draggable thumb
+                    // ★ DRAGGABLE THUMB ★
+                    // Auto-triggers at 95% DURING the drag — no release needed
                     Box(
                         modifier = Modifier
                             .offset { IntOffset(dragOffsetX.roundToInt(), 0) }
                             .size(thumbSizeDp)
                             .clip(CircleShape)
                             .background(
-                                if (slideProgress >= 1f) WarmGlow
+                                if (hasBoarded) WarmGlow
                                 else WarmGlow.copy(alpha = 0.85f + slideProgress * 0.15f)
                             )
-                            .pointerInput(hasBoarded) {
+                            .pointerInput(Unit) {
                                 if (hasBoarded) return@pointerInput
                                 detectHorizontalDragGestures(
                                     onDragEnd = {
-                                        if (slideProgress >= 0.95f) {
-                                            // Threshold reached → trigger boarding!
+                                        // If somehow we get here without triggering,
+                                        // check and fire. Otherwise snap back.
+                                        val currentMax = (trackWidthPx - thumbSizePx)
+                                            .coerceAtLeast(1f)
+                                        val currentProgress = dragOffsetX / currentMax
+                                        if (currentProgress >= 0.90f && !hasBoarded) {
                                             hasBoarded = true
-                                        } else {
-                                            // Snap back with animation
+                                        } else if (!hasBoarded) {
                                             scope.launch {
-                                                val snapBack = Animatable(dragOffsetX)
-                                                snapBack.animateTo(
-                                                    targetValue = 0f,
-                                                    animationSpec = tween(
-                                                        300,
-                                                        easing = FastOutSlowInEasing
-                                                    )
-                                                ) {
-                                                    dragOffsetX = value
-                                                }
+                                                val anim = Animatable(dragOffsetX)
+                                                anim.animateTo(
+                                                    0f,
+                                                    tween(300, easing = FastOutSlowInEasing)
+                                                ) { dragOffsetX = value }
                                             }
                                         }
                                     },
                                     onHorizontalDrag = { change, dragAmount ->
+                                        if (hasBoarded) return@detectHorizontalDragGestures
                                         change.consume()
+                                        val currentMax = (trackWidthPx - thumbSizePx)
+                                            .coerceAtLeast(1f)
                                         dragOffsetX = (dragOffsetX + dragAmount)
-                                            .coerceIn(0f, maxDrag)
+                                            .coerceIn(0f, currentMax)
+
+                                        // ★ AUTO-TRIGGER at 95% — no release needed ★
+                                        val currentProgress = dragOffsetX / currentMax
+                                        if (currentProgress >= 0.95f && !hasBoarded) {
+                                            hasBoarded = true
+                                        }
                                     }
                                 )
                             },
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
-                            imageVector = if (slideProgress >= 0.95f)
-                                Icons.Default.FlightTakeoff
-                            else Icons.Default.FlightTakeoff,
+                            imageVector = Icons.Default.FlightTakeoff,
                             contentDescription = "Board",
                             tint = DeepNight,
                             modifier = Modifier
@@ -394,16 +393,14 @@ fun BoardingPassCard(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // Status text
                 Text(
                     text = when {
                         hasBoarded -> "✈️ BOARDING COMPLETE"
-                        slideProgress >= 0.95f -> "RELEASE TO BOARD!"
                         slideProgress > 0.1f -> "${(slideProgress * 100).toInt()}%"
                         else -> "Drag the plane to board your flight"
                     },
                     style = MaterialTheme.typography.labelSmall,
-                    color = if (hasBoarded || slideProgress >= 0.95f) WarmGlow else TextSecondary,
+                    color = if (hasBoarded) WarmGlow else TextSecondary,
                     textAlign = TextAlign.Center,
                     letterSpacing = 1.sp
                 )
