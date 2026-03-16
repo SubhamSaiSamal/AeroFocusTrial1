@@ -39,10 +39,7 @@ object AppModule {
             AeroFocusDatabase.DATABASE_NAME
         )
             .addCallback(object : androidx.room.RoomDatabase.Callback() {
-                override fun onCreate(db: SupportSQLiteDatabase) {
-                    super.onCreate(db)
-                    // Seed destinations using raw SQL to avoid circular DI.
-                    // This runs once on first database creation.
+                private fun seedDestinations(db: SupportSQLiteDatabase) {
                     AeroFocusDatabase.SEED_DESTINATIONS.forEach { dest ->
                         db.execSQL(
                             """
@@ -60,6 +57,16 @@ object AppModule {
                             )
                         )
                     }
+                }
+
+                override fun onCreate(db: SupportSQLiteDatabase) {
+                    super.onCreate(db)
+                    seedDestinations(db)
+                }
+
+                override fun onDestructiveMigration(db: SupportSQLiteDatabase) {
+                    super.onDestructiveMigration(db)
+                    seedDestinations(db)
                 }
             })
             .fallbackToDestructiveMigration()

@@ -59,6 +59,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import android.app.Activity
+import android.view.WindowManager
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.ui.platform.LocalContext
+
 import com.aerofocus.app.service.FlightTimerService
 import com.aerofocus.app.service.TimerState
 import com.aerofocus.app.ui.components.FrostedGlassBar
@@ -151,14 +156,15 @@ fun InFlightScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
 
-            // ── 3-Way Segmented Toggle ──────────────────────────
+            // ── 4-Way Segmented Toggle ──────────────────────────
             SegmentedToggle(
                 selectedIndex = selectedView,
                 onSelect = { selectedView = it },
                 items = listOf(
                     ToggleItem(Icons.Default.RemoveRedEye, "Window"),
                     ToggleItem(Icons.Default.Map, "Map"),
-                    ToggleItem(Icons.Default.SelfImprovement, "Zen")
+                    ToggleItem(Icons.Default.SelfImprovement, "Zen"),
+                    ToggleItem(Icons.Default.Warning, "Standby") // Reusing Warning icon as a placeholder for a moon/battery icon
                 ),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -195,6 +201,10 @@ fun InFlightScreen(
                         2 -> ZenModeView(
                             formattedTime = formattedTime,
                             isPaused = timerState == TimerState.PAUSED
+                        )
+                        3 -> StandbyModeView(
+                            formattedTime = formattedTime,
+                            onWake = { selectedView = 2 } // Wake to Zen mode
                         )
                     }
                 }
@@ -273,7 +283,48 @@ fun InFlightScreen(
     }
 }
 
-// ── 3-Way Segmented Toggle ──────────────────────────────────────────
+// ── Standby Mode View (AMOLED Black, Screen On) ───────────────────
+
+@Composable
+fun StandbyModeView(
+    formattedTime: String,
+    onWake: () -> Unit
+) {
+    val context = LocalContext.current
+    
+    DisposableEffect(Unit) {
+        val window = (context as? Activity)?.window
+        window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        onDispose {
+            window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .clickable { onWake() },
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = formattedTime,
+                style = MaterialTheme.typography.displayLarge.copy(fontSize = 72.sp),
+                color = TextSecondary.copy(alpha = 0.5f) // Very dim for AMOLED burn-in protection
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = "Tap to wake",
+                style = MaterialTheme.typography.labelMedium,
+                color = TextSecondary.copy(alpha = 0.3f),
+                letterSpacing = 2.sp
+            )
+        }
+    }
+}
+
+// ── Segmented Toggle ──────────────────────────────────────────
 
 private data class ToggleItem(val icon: ImageVector, val label: String)
 

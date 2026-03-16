@@ -191,11 +191,23 @@ private fun FlightLogEntry(session: FocusSessionEntity) {
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
-            Text(
-                text = "${session.durationMinutes} min • ${dateFormat.format(Date(session.startTime))}",
-                style = MaterialTheme.typography.bodySmall,
-                color = TextSecondary
-            )
+
+            if (!session.wasCompleted && session.distractingPackage != null) {
+                // Show the "Black Box" offending app
+                Text(
+                    text = "Distracted by: ${session.distractingPackage}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = ErrorRed.copy(alpha = 0.8f),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            } else {
+                Text(
+                    text = "${session.durationMinutes} min • ${dateFormat.format(Date(session.startTime))}",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = TextSecondary
+                )
+            }
         }
 
         // Miles earned

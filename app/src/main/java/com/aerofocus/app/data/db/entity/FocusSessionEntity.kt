@@ -33,5 +33,11 @@ data class FocusSessionEntity(
      * Miles earned for this session.
      * Calculated as [durationMinutes] for completed sessions, 0 for failed.
      */
-    val earnedMiles: Int
+    val earnedMiles: Int,
+
+    /**
+     * If the flight was aborted by the FocusEnforcerService, this records
+     * the exact package name of the distracting app. Null otherwise.
+     */
+    val distractingPackage: String? = null
 )

@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
         FocusSessionEntity::class,
         UnlockedDestinationEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = false
 )
 abstract class AeroFocusDatabase : RoomDatabase() {

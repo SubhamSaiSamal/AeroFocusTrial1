@@ -29,7 +29,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -39,6 +43,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import android.media.RingtoneManager
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.delay
 import com.aerofocus.app.ui.theme.DeepNight
 import com.aerofocus.app.ui.theme.ErrorRed
 import com.aerofocus.app.ui.theme.MutedSunset
@@ -65,6 +72,8 @@ fun ArrivalScreen(
     wasCompleted: Boolean,
     onReturnToLounge: () -> Unit
 ) {
+    val context = LocalContext.current
+    
     // Entrance animation
     val animProgress = remember { Animatable(0f) }
     LaunchedEffect(Unit) {
@@ -72,6 +81,28 @@ fun ArrivalScreen(
             1f,
             animationSpec = tween(800, easing = FastOutSlowInEasing)
         )
+    }
+
+    // Layover Timer State
+    var layoverRemainingSeconds by remember { mutableIntStateOf(0) }
+    var isLayoverActive by remember { mutableStateOf(false) }
+
+    LaunchedEffect(isLayoverActive, layoverRemainingSeconds) {
+        if (isLayoverActive && layoverRemainingSeconds > 0) {
+            delay(1000L)
+            layoverRemainingSeconds -= 1
+            if (layoverRemainingSeconds == 0) {
+                isLayoverActive = false
+                // Play system notification sound when layover ends
+                try {
+                    val uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+                    val ringtone = RingtoneManager.getRingtone(context, uri)
+                    ringtone.play()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        }
     }
 
     Box(
@@ -191,6 +222,72 @@ fun ArrivalScreen(
                         color = TextSecondary,
                         textAlign = TextAlign.Center
                     )
+                }
+            }
+
+            // ── Layover Options (Only on Success) ───────────────
+            if (wasCompleted) {
+                Spacer(modifier = Modifier.height(32.dp))
+                
+                if (isLayoverActive) {
+                    // Active Layover Timer UI
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(SurfaceDark, RoundedCornerShape(24.dp))
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "LAYOVER ACTIVE",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = TextSecondary,
+                            letterSpacing = 2.sp
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = String.format("%02d:%02d", layoverRemainingSeconds / 60, layoverRemainingSeconds % 60),
+                            style = MaterialTheme.typography.displayLarge,
+                            color = TextPrimary
+                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(
+                            onClick = { isLayoverActive = false; layoverRemainingSeconds = 0 },
+                            colors = ButtonDefaults.buttonColors(containerColor = SurfaceDark)
+                        ) {
+                            Text("Cancel", color = TextSecondary)
+                        }
+                    }
+                } else {
+                    // Start Layover Choices
+                    Text(
+                        text = "START LAYOVER",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = TextSecondary,
+                        letterSpacing = 2.sp
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        Button(
+                            onClick = { layoverRemainingSeconds = 5 * 60; isLayoverActive = true },
+                            modifier = Modifier.weight(1f).height(56.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = SurfaceDark)
+                        ) {
+                            Text("5 Min Break", color = TextPrimary)
+                        }
+                        Button(
+                            onClick = { layoverRemainingSeconds = 10 * 60; isLayoverActive = true },
+                            modifier = Modifier.weight(1f).height(56.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = SurfaceDark)
+                        ) {
+                            Text("10 Min Break", color = TextPrimary)
+                        }
+                    }
                 }
             }
 

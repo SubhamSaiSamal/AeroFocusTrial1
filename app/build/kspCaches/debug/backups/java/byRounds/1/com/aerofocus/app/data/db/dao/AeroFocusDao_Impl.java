@@ -49,7 +49,7 @@ public final class AeroFocusDao_Impl implements AeroFocusDao {
       @Override
       @NonNull
       protected String createQuery() {
-        return "INSERT OR REPLACE INTO `focus_sessions` (`sessionId`,`startTime`,`durationMinutes`,`focusTag`,`wasCompleted`,`earnedMiles`) VALUES (nullif(?, 0),?,?,?,?,?)";
+        return "INSERT OR REPLACE INTO `focus_sessions` (`sessionId`,`startTime`,`durationMinutes`,`focusTag`,`wasCompleted`,`earnedMiles`,`distractingPackage`) VALUES (nullif(?, 0),?,?,?,?,?,?)";
       }
 
       @Override
@@ -62,6 +62,11 @@ public final class AeroFocusDao_Impl implements AeroFocusDao {
         final int _tmp = entity.getWasCompleted() ? 1 : 0;
         statement.bindLong(5, _tmp);
         statement.bindLong(6, entity.getEarnedMiles());
+        if (entity.getDistractingPackage() == null) {
+          statement.bindNull(7);
+        } else {
+          statement.bindString(7, entity.getDistractingPackage());
+        }
       }
     };
     this.__insertionAdapterOfUnlockedDestinationEntity = new EntityInsertionAdapter<UnlockedDestinationEntity>(__db) {
@@ -226,6 +231,7 @@ public final class AeroFocusDao_Impl implements AeroFocusDao {
           final int _cursorIndexOfFocusTag = CursorUtil.getColumnIndexOrThrow(_cursor, "focusTag");
           final int _cursorIndexOfWasCompleted = CursorUtil.getColumnIndexOrThrow(_cursor, "wasCompleted");
           final int _cursorIndexOfEarnedMiles = CursorUtil.getColumnIndexOrThrow(_cursor, "earnedMiles");
+          final int _cursorIndexOfDistractingPackage = CursorUtil.getColumnIndexOrThrow(_cursor, "distractingPackage");
           final List<FocusSessionEntity> _result = new ArrayList<FocusSessionEntity>(_cursor.getCount());
           while (_cursor.moveToNext()) {
             final FocusSessionEntity _item;
@@ -243,7 +249,13 @@ public final class AeroFocusDao_Impl implements AeroFocusDao {
             _tmpWasCompleted = _tmp != 0;
             final int _tmpEarnedMiles;
             _tmpEarnedMiles = _cursor.getInt(_cursorIndexOfEarnedMiles);
-            _item = new FocusSessionEntity(_tmpSessionId,_tmpStartTime,_tmpDurationMinutes,_tmpFocusTag,_tmpWasCompleted,_tmpEarnedMiles);
+            final String _tmpDistractingPackage;
+            if (_cursor.isNull(_cursorIndexOfDistractingPackage)) {
+              _tmpDistractingPackage = null;
+            } else {
+              _tmpDistractingPackage = _cursor.getString(_cursorIndexOfDistractingPackage);
+            }
+            _item = new FocusSessionEntity(_tmpSessionId,_tmpStartTime,_tmpDurationMinutes,_tmpFocusTag,_tmpWasCompleted,_tmpEarnedMiles,_tmpDistractingPackage);
             _result.add(_item);
           }
           return _result;

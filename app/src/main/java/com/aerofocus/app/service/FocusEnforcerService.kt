@@ -87,7 +87,7 @@ class FocusEnforcerService : Service() {
                 if (FlightTimerService.timerStateFlow.value == TimerState.RUNNING) {
                     val foregroundApp = getForegroundPackage()
                     if (foregroundApp != null && blockedPackages.contains(foregroundApp)) {
-                        punishUser()
+                        punishUser(foregroundApp)
                     }
                 }
                 delay(1000L) // Check every second
@@ -112,7 +112,7 @@ class FocusEnforcerService : Service() {
         return currentForegroundPackage
     }
 
-    private fun punishUser() {
+    private fun punishUser(offendingPackage: String) {
         // 1. Log the "Walk of Shame"
         val flightDuration = FlightTimerService.totalDurationFlow.value / (60 * 1000L)
         serviceScope.launch {
@@ -122,7 +122,8 @@ class FocusEnforcerService : Service() {
                     durationMinutes = flightDuration.toInt(),
                     focusTag = "ABORTED: Distraction",
                     wasCompleted = false,
-                    earnedMiles = 0
+                    earnedMiles = 0,
+                    distractingPackage = offendingPackage
                 )
             )
         }

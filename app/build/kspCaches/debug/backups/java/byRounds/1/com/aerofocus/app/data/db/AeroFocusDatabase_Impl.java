@@ -33,13 +33,13 @@ public final class AeroFocusDatabase_Impl extends AeroFocusDatabase {
   @Override
   @NonNull
   protected SupportSQLiteOpenHelper createOpenHelper(@NonNull final DatabaseConfiguration config) {
-    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(1) {
+    final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(config, new RoomOpenHelper.Delegate(2) {
       @Override
       public void createAllTables(@NonNull final SupportSQLiteDatabase db) {
-        db.execSQL("CREATE TABLE IF NOT EXISTS `focus_sessions` (`sessionId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `startTime` INTEGER NOT NULL, `durationMinutes` INTEGER NOT NULL, `focusTag` TEXT NOT NULL, `wasCompleted` INTEGER NOT NULL, `earnedMiles` INTEGER NOT NULL)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS `focus_sessions` (`sessionId` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `startTime` INTEGER NOT NULL, `durationMinutes` INTEGER NOT NULL, `focusTag` TEXT NOT NULL, `wasCompleted` INTEGER NOT NULL, `earnedMiles` INTEGER NOT NULL, `distractingPackage` TEXT)");
         db.execSQL("CREATE TABLE IF NOT EXISTS `unlocked_destinations` (`iataCode` TEXT NOT NULL, `cityName` TEXT NOT NULL, `latitude` REAL NOT NULL, `longitude` REAL NOT NULL, `requiredMiles` INTEGER NOT NULL, `isUnlocked` INTEGER NOT NULL, PRIMARY KEY(`iataCode`))");
         db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd2051b27caa91dff6f00898c57905287')");
+        db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3d2887613e0ba9677ef9e7186c06398e')");
       }
 
       @Override
@@ -89,13 +89,14 @@ public final class AeroFocusDatabase_Impl extends AeroFocusDatabase {
       @NonNull
       public RoomOpenHelper.ValidationResult onValidateSchema(
           @NonNull final SupportSQLiteDatabase db) {
-        final HashMap<String, TableInfo.Column> _columnsFocusSessions = new HashMap<String, TableInfo.Column>(6);
+        final HashMap<String, TableInfo.Column> _columnsFocusSessions = new HashMap<String, TableInfo.Column>(7);
         _columnsFocusSessions.put("sessionId", new TableInfo.Column("sessionId", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsFocusSessions.put("startTime", new TableInfo.Column("startTime", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsFocusSessions.put("durationMinutes", new TableInfo.Column("durationMinutes", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsFocusSessions.put("focusTag", new TableInfo.Column("focusTag", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsFocusSessions.put("wasCompleted", new TableInfo.Column("wasCompleted", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsFocusSessions.put("earnedMiles", new TableInfo.Column("earnedMiles", "INTEGER", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsFocusSessions.put("distractingPackage", new TableInfo.Column("distractingPackage", "TEXT", false, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysFocusSessions = new HashSet<TableInfo.ForeignKey>(0);
         final HashSet<TableInfo.Index> _indicesFocusSessions = new HashSet<TableInfo.Index>(0);
         final TableInfo _infoFocusSessions = new TableInfo("focus_sessions", _columnsFocusSessions, _foreignKeysFocusSessions, _indicesFocusSessions);
@@ -123,7 +124,7 @@ public final class AeroFocusDatabase_Impl extends AeroFocusDatabase {
         }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "d2051b27caa91dff6f00898c57905287", "7115fa05642a8f2ac33dd905a287bba8");
+    }, "3d2887613e0ba9677ef9e7186c06398e", "4dbc0778d9072e0a898f817adaaffffa");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(config.context).name(config.name).callback(_openCallback).build();
     final SupportSQLiteOpenHelper _helper = config.sqliteOpenHelperFactory.create(_sqliteConfig);
     return _helper;
