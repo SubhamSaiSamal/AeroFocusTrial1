@@ -10,175 +10,195 @@
 10
 11    <!-- Foreground service permission (required Android 9+) -->
 12    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-12-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:5:5-77
-12-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:5:22-74
+12-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:6:5-77
+12-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:6:22-74
 13    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
-13-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:6:5-92
-13-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:6:22-89
+13-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:7:5-92
+13-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:7:22-89
 14
 15    <!-- Notification permission (required Android 13+) -->
 16    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-16-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:9:5-77
-16-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:9:22-74
+16-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:10:5-77
+16-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:10:22-74
 17
 18    <!-- Keep screen on during focus sessions -->
 19    <uses-permission android:name="android.permission.WAKE_LOCK" />
-19-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:12:5-68
-19-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:12:22-65
-20    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-20-->[androidx.media3:media3-common:1.5.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\285ae6cf6fa6e64e1e5571d51719b031\workspace\transformed\media3-common-1.5.1\AndroidManifest.xml:22:5-79
-20-->[androidx.media3:media3-common:1.5.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\285ae6cf6fa6e64e1e5571d51719b031\workspace\transformed\media3-common-1.5.1\AndroidManifest.xml:22:22-76
-21
-22    <permission
-22-->[androidx.core:core:1.15.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\514c9b1f6f4e122bef62b62400def39b\workspace\transformed\core-1.15.0\AndroidManifest.xml:22:5-24:47
-23        android:name="com.aerofocus.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
-23-->[androidx.core:core:1.15.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\514c9b1f6f4e122bef62b62400def39b\workspace\transformed\core-1.15.0\AndroidManifest.xml:23:9-81
-24        android:protectionLevel="signature" />
-24-->[androidx.core:core:1.15.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\514c9b1f6f4e122bef62b62400def39b\workspace\transformed\core-1.15.0\AndroidManifest.xml:24:9-44
-25
-26    <uses-permission android:name="com.aerofocus.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
-26-->[androidx.core:core:1.15.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\514c9b1f6f4e122bef62b62400def39b\workspace\transformed\core-1.15.0\AndroidManifest.xml:26:5-97
-26-->[androidx.core:core:1.15.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\514c9b1f6f4e122bef62b62400def39b\workspace\transformed\core-1.15.0\AndroidManifest.xml:26:22-94
+19-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:13:5-68
+19-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:13:22-65
+20
+21    <!-- Haptics for aborted flights -->
+22    <uses-permission android:name="android.permission.VIBRATE" />
+22-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:16:5-66
+22-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:16:22-63
+23
+24    <!-- App Blocking usage stats permission (requires user grant via Settings) -->
+25    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
+25-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:19:5-20:47
+25-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:19:22-75
+26    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+26-->[androidx.media3:media3-common:1.5.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\285ae6cf6fa6e64e1e5571d51719b031\workspace\transformed\media3-common-1.5.1\AndroidManifest.xml:22:5-79
+26-->[androidx.media3:media3-common:1.5.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\285ae6cf6fa6e64e1e5571d51719b031\workspace\transformed\media3-common-1.5.1\AndroidManifest.xml:22:22-76
 27
-28    <application
-28-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:14:5-40:19
-29        android:name="com.aerofocus.app.AeroFocusApp"
-29-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:15:9-37
-30        android:allowBackup="true"
-30-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:16:9-35
-31        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
-31-->[androidx.core:core:1.15.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\514c9b1f6f4e122bef62b62400def39b\workspace\transformed\core-1.15.0\AndroidManifest.xml:28:18-86
-32        android:debuggable="true"
-33        android:extractNativeLibs="false"
-34        android:icon="@mipmap/ic_launcher"
-34-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:17:9-43
-35        android:label="@string/app_name"
-35-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:18:9-41
-36        android:roundIcon="@mipmap/ic_launcher_round"
-36-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:19:9-54
-37        android:supportsRtl="true"
-37-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:20:9-35
-38        android:theme="@style/Theme.AeroFocus" >
-38-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:21:9-47
-39        <activity
-39-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:23:9-31:20
-40            android:name="com.aerofocus.app.MainActivity"
-40-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:24:13-41
-41            android:exported="true"
-41-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:25:13-36
-42            android:theme="@style/Theme.AeroFocus" >
-42-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:26:13-51
-43            <intent-filter>
-43-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:27:13-30:29
-44                <action android:name="android.intent.action.MAIN" />
-44-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:28:17-69
-44-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:28:25-66
-45
-46                <category android:name="android.intent.category.LAUNCHER" />
-46-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:29:17-77
-46-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:29:27-74
-47            </intent-filter>
-48        </activity>
-49
-50        <!-- Flight Timer Foreground Service -->
-51        <service
-51-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:34:9-38:61
-52            android:name="com.aerofocus.app.service.FlightTimerService"
-52-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:35:13-55
-53            android:enabled="true"
-53-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:36:13-35
-54            android:exported="false"
-54-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:37:13-37
-55            android:foregroundServiceType="mediaPlayback" />
-55-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:38:13-58
-56
-57        <activity
-57-->[androidx.compose.ui:ui-tooling-android:1.7.6] C:\Users\Subham\.gradle\caches\9.3.1\transforms\c7f5735b9f7bbc4ccaa8040c15d848f4\workspace\transformed\ui-tooling-release\AndroidManifest.xml:23:9-25:39
-58            android:name="androidx.compose.ui.tooling.PreviewActivity"
-58-->[androidx.compose.ui:ui-tooling-android:1.7.6] C:\Users\Subham\.gradle\caches\9.3.1\transforms\c7f5735b9f7bbc4ccaa8040c15d848f4\workspace\transformed\ui-tooling-release\AndroidManifest.xml:24:13-71
-59            android:exported="true" />
-59-->[androidx.compose.ui:ui-tooling-android:1.7.6] C:\Users\Subham\.gradle\caches\9.3.1\transforms\c7f5735b9f7bbc4ccaa8040c15d848f4\workspace\transformed\ui-tooling-release\AndroidManifest.xml:25:13-36
-60        <activity
-60-->[androidx.compose.ui:ui-test-manifest:1.7.6] C:\Users\Subham\.gradle\caches\9.3.1\transforms\bcbc3fa2b0297584b0f036dd4dc5120f\workspace\transformed\ui-test-manifest-1.7.6\AndroidManifest.xml:23:9-25:39
-61            android:name="androidx.activity.ComponentActivity"
-61-->[androidx.compose.ui:ui-test-manifest:1.7.6] C:\Users\Subham\.gradle\caches\9.3.1\transforms\bcbc3fa2b0297584b0f036dd4dc5120f\workspace\transformed\ui-test-manifest-1.7.6\AndroidManifest.xml:24:13-63
-62            android:exported="true" />
-62-->[androidx.compose.ui:ui-test-manifest:1.7.6] C:\Users\Subham\.gradle\caches\9.3.1\transforms\bcbc3fa2b0297584b0f036dd4dc5120f\workspace\transformed\ui-test-manifest-1.7.6\AndroidManifest.xml:25:13-36
-63
-64        <provider
-64-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\4e5a16667adba362c2139392af1eac50\workspace\transformed\emoji2-1.3.0\AndroidManifest.xml:24:9-32:20
-65            android:name="androidx.startup.InitializationProvider"
-65-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\4e5a16667adba362c2139392af1eac50\workspace\transformed\emoji2-1.3.0\AndroidManifest.xml:25:13-67
-66            android:authorities="com.aerofocus.app.androidx-startup"
-66-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\4e5a16667adba362c2139392af1eac50\workspace\transformed\emoji2-1.3.0\AndroidManifest.xml:26:13-68
-67            android:exported="false" >
-67-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\4e5a16667adba362c2139392af1eac50\workspace\transformed\emoji2-1.3.0\AndroidManifest.xml:27:13-37
-68            <meta-data
-68-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\4e5a16667adba362c2139392af1eac50\workspace\transformed\emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
-69                android:name="androidx.emoji2.text.EmojiCompatInitializer"
-69-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\4e5a16667adba362c2139392af1eac50\workspace\transformed\emoji2-1.3.0\AndroidManifest.xml:30:17-75
-70                android:value="androidx.startup" />
-70-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\4e5a16667adba362c2139392af1eac50\workspace\transformed\emoji2-1.3.0\AndroidManifest.xml:31:17-49
-71            <meta-data
-71-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\Subham\.gradle\caches\9.3.1\transforms\83db35d7b1c8f12dff60777737dc4926\workspace\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:29:13-31:52
-72                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
-72-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\Subham\.gradle\caches\9.3.1\transforms\83db35d7b1c8f12dff60777737dc4926\workspace\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:30:17-78
-73                android:value="androidx.startup" />
-73-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\Subham\.gradle\caches\9.3.1\transforms\83db35d7b1c8f12dff60777737dc4926\workspace\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:31:17-49
-74            <meta-data
-74-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:29:13-31:52
-75                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
-75-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:30:17-85
-76                android:value="androidx.startup" />
-76-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:31:17-49
-77        </provider>
-78
-79        <service
-79-->[androidx.room:room-runtime:2.6.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0d4eb2539be6090203095b4fccb1cf47\workspace\transformed\room-runtime-2.6.1\AndroidManifest.xml:24:9-28:63
-80            android:name="androidx.room.MultiInstanceInvalidationService"
-80-->[androidx.room:room-runtime:2.6.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0d4eb2539be6090203095b4fccb1cf47\workspace\transformed\room-runtime-2.6.1\AndroidManifest.xml:25:13-74
-81            android:directBootAware="true"
-81-->[androidx.room:room-runtime:2.6.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0d4eb2539be6090203095b4fccb1cf47\workspace\transformed\room-runtime-2.6.1\AndroidManifest.xml:26:13-43
-82            android:exported="false" />
-82-->[androidx.room:room-runtime:2.6.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0d4eb2539be6090203095b4fccb1cf47\workspace\transformed\room-runtime-2.6.1\AndroidManifest.xml:27:13-37
-83
-84        <receiver
-84-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:34:9-52:20
-85            android:name="androidx.profileinstaller.ProfileInstallReceiver"
-85-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:35:13-76
-86            android:directBootAware="false"
-86-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:36:13-44
-87            android:enabled="true"
-87-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:37:13-35
-88            android:exported="true"
-88-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:38:13-36
-89            android:permission="android.permission.DUMP" >
-89-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:39:13-57
-90            <intent-filter>
-90-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:40:13-42:29
-91                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
-91-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:17-91
-91-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:25-88
-92            </intent-filter>
-93            <intent-filter>
-93-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:43:13-45:29
-94                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
-94-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:17-85
-94-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:25-82
-95            </intent-filter>
-96            <intent-filter>
-96-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:46:13-48:29
-97                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
-97-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:17-88
-97-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:25-85
-98            </intent-filter>
-99            <intent-filter>
-99-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:49:13-51:29
-100                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
-100-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:17-95
-100-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:25-92
-101            </intent-filter>
-102        </receiver>
-103    </application>
-104
-105</manifest>
+28    <permission
+28-->[androidx.core:core:1.15.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\514c9b1f6f4e122bef62b62400def39b\workspace\transformed\core-1.15.0\AndroidManifest.xml:22:5-24:47
+29        android:name="com.aerofocus.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+29-->[androidx.core:core:1.15.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\514c9b1f6f4e122bef62b62400def39b\workspace\transformed\core-1.15.0\AndroidManifest.xml:23:9-81
+30        android:protectionLevel="signature" />
+30-->[androidx.core:core:1.15.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\514c9b1f6f4e122bef62b62400def39b\workspace\transformed\core-1.15.0\AndroidManifest.xml:24:9-44
+31
+32    <uses-permission android:name="com.aerofocus.app.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+32-->[androidx.core:core:1.15.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\514c9b1f6f4e122bef62b62400def39b\workspace\transformed\core-1.15.0\AndroidManifest.xml:26:5-97
+32-->[androidx.core:core:1.15.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\514c9b1f6f4e122bef62b62400def39b\workspace\transformed\core-1.15.0\AndroidManifest.xml:26:22-94
+33
+34    <application
+34-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:22:5-54:19
+35        android:name="com.aerofocus.app.AeroFocusApp"
+35-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:23:9-37
+36        android:allowBackup="true"
+36-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:24:9-35
+37        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+37-->[androidx.core:core:1.15.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\514c9b1f6f4e122bef62b62400def39b\workspace\transformed\core-1.15.0\AndroidManifest.xml:28:18-86
+38        android:debuggable="true"
+39        android:extractNativeLibs="false"
+40        android:icon="@mipmap/ic_launcher"
+40-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:25:9-43
+41        android:label="@string/app_name"
+41-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:26:9-41
+42        android:roundIcon="@mipmap/ic_launcher_round"
+42-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:27:9-54
+43        android:supportsRtl="true"
+43-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:28:9-35
+44        android:theme="@style/Theme.AeroFocus" >
+44-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:29:9-47
+45        <activity
+45-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:31:9-39:20
+46            android:name="com.aerofocus.app.MainActivity"
+46-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:32:13-41
+47            android:exported="true"
+47-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:33:13-36
+48            android:theme="@style/Theme.AeroFocus" >
+48-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:34:13-51
+49            <intent-filter>
+49-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:35:13-38:29
+50                <action android:name="android.intent.action.MAIN" />
+50-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:36:17-69
+50-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:36:25-66
+51
+52                <category android:name="android.intent.category.LAUNCHER" />
+52-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:37:17-77
+52-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:37:27-74
+53            </intent-filter>
+54        </activity>
+55
+56        <!-- Flight Timer Foreground Service -->
+57        <service
+57-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:42:9-46:61
+58            android:name="com.aerofocus.app.service.FlightTimerService"
+58-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:43:13-55
+59            android:enabled="true"
+59-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:44:13-35
+60            android:exported="false"
+60-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:45:13-37
+61            android:foregroundServiceType="mediaPlayback" />
+61-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:46:13-58
+62
+63        <!-- App Blocking Service (runs alongside timer) -->
+64        <service
+64-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:49:9-52:40
+65            android:name="com.aerofocus.app.service.FocusEnforcerService"
+65-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:50:13-57
+66            android:enabled="true"
+66-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:51:13-35
+67            android:exported="false" />
+67-->C:\Users\Subham\Desktop\AeroFocusTrial1\app\src\main\AndroidManifest.xml:52:13-37
+68
+69        <activity
+69-->[androidx.compose.ui:ui-tooling-android:1.7.6] C:\Users\Subham\.gradle\caches\9.3.1\transforms\c7f5735b9f7bbc4ccaa8040c15d848f4\workspace\transformed\ui-tooling-release\AndroidManifest.xml:23:9-25:39
+70            android:name="androidx.compose.ui.tooling.PreviewActivity"
+70-->[androidx.compose.ui:ui-tooling-android:1.7.6] C:\Users\Subham\.gradle\caches\9.3.1\transforms\c7f5735b9f7bbc4ccaa8040c15d848f4\workspace\transformed\ui-tooling-release\AndroidManifest.xml:24:13-71
+71            android:exported="true" />
+71-->[androidx.compose.ui:ui-tooling-android:1.7.6] C:\Users\Subham\.gradle\caches\9.3.1\transforms\c7f5735b9f7bbc4ccaa8040c15d848f4\workspace\transformed\ui-tooling-release\AndroidManifest.xml:25:13-36
+72        <activity
+72-->[androidx.compose.ui:ui-test-manifest:1.7.6] C:\Users\Subham\.gradle\caches\9.3.1\transforms\bcbc3fa2b0297584b0f036dd4dc5120f\workspace\transformed\ui-test-manifest-1.7.6\AndroidManifest.xml:23:9-25:39
+73            android:name="androidx.activity.ComponentActivity"
+73-->[androidx.compose.ui:ui-test-manifest:1.7.6] C:\Users\Subham\.gradle\caches\9.3.1\transforms\bcbc3fa2b0297584b0f036dd4dc5120f\workspace\transformed\ui-test-manifest-1.7.6\AndroidManifest.xml:24:13-63
+74            android:exported="true" />
+74-->[androidx.compose.ui:ui-test-manifest:1.7.6] C:\Users\Subham\.gradle\caches\9.3.1\transforms\bcbc3fa2b0297584b0f036dd4dc5120f\workspace\transformed\ui-test-manifest-1.7.6\AndroidManifest.xml:25:13-36
+75
+76        <provider
+76-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\4e5a16667adba362c2139392af1eac50\workspace\transformed\emoji2-1.3.0\AndroidManifest.xml:24:9-32:20
+77            android:name="androidx.startup.InitializationProvider"
+77-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\4e5a16667adba362c2139392af1eac50\workspace\transformed\emoji2-1.3.0\AndroidManifest.xml:25:13-67
+78            android:authorities="com.aerofocus.app.androidx-startup"
+78-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\4e5a16667adba362c2139392af1eac50\workspace\transformed\emoji2-1.3.0\AndroidManifest.xml:26:13-68
+79            android:exported="false" >
+79-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\4e5a16667adba362c2139392af1eac50\workspace\transformed\emoji2-1.3.0\AndroidManifest.xml:27:13-37
+80            <meta-data
+80-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\4e5a16667adba362c2139392af1eac50\workspace\transformed\emoji2-1.3.0\AndroidManifest.xml:29:13-31:52
+81                android:name="androidx.emoji2.text.EmojiCompatInitializer"
+81-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\4e5a16667adba362c2139392af1eac50\workspace\transformed\emoji2-1.3.0\AndroidManifest.xml:30:17-75
+82                android:value="androidx.startup" />
+82-->[androidx.emoji2:emoji2:1.3.0] C:\Users\Subham\.gradle\caches\9.3.1\transforms\4e5a16667adba362c2139392af1eac50\workspace\transformed\emoji2-1.3.0\AndroidManifest.xml:31:17-49
+83            <meta-data
+83-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\Subham\.gradle\caches\9.3.1\transforms\83db35d7b1c8f12dff60777737dc4926\workspace\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:29:13-31:52
+84                android:name="androidx.lifecycle.ProcessLifecycleInitializer"
+84-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\Subham\.gradle\caches\9.3.1\transforms\83db35d7b1c8f12dff60777737dc4926\workspace\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:30:17-78
+85                android:value="androidx.startup" />
+85-->[androidx.lifecycle:lifecycle-process:2.8.7] C:\Users\Subham\.gradle\caches\9.3.1\transforms\83db35d7b1c8f12dff60777737dc4926\workspace\transformed\lifecycle-process-2.8.7\AndroidManifest.xml:31:17-49
+86            <meta-data
+86-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:29:13-31:52
+87                android:name="androidx.profileinstaller.ProfileInstallerInitializer"
+87-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:30:17-85
+88                android:value="androidx.startup" />
+88-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:31:17-49
+89        </provider>
+90
+91        <service
+91-->[androidx.room:room-runtime:2.6.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0d4eb2539be6090203095b4fccb1cf47\workspace\transformed\room-runtime-2.6.1\AndroidManifest.xml:24:9-28:63
+92            android:name="androidx.room.MultiInstanceInvalidationService"
+92-->[androidx.room:room-runtime:2.6.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0d4eb2539be6090203095b4fccb1cf47\workspace\transformed\room-runtime-2.6.1\AndroidManifest.xml:25:13-74
+93            android:directBootAware="true"
+93-->[androidx.room:room-runtime:2.6.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0d4eb2539be6090203095b4fccb1cf47\workspace\transformed\room-runtime-2.6.1\AndroidManifest.xml:26:13-43
+94            android:exported="false" />
+94-->[androidx.room:room-runtime:2.6.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0d4eb2539be6090203095b4fccb1cf47\workspace\transformed\room-runtime-2.6.1\AndroidManifest.xml:27:13-37
+95
+96        <receiver
+96-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:34:9-52:20
+97            android:name="androidx.profileinstaller.ProfileInstallReceiver"
+97-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:35:13-76
+98            android:directBootAware="false"
+98-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:36:13-44
+99            android:enabled="true"
+99-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:37:13-35
+100            android:exported="true"
+100-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:38:13-36
+101            android:permission="android.permission.DUMP" >
+101-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:39:13-57
+102            <intent-filter>
+102-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:40:13-42:29
+103                <action android:name="androidx.profileinstaller.action.INSTALL_PROFILE" />
+103-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:17-91
+103-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:41:25-88
+104            </intent-filter>
+105            <intent-filter>
+105-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:43:13-45:29
+106                <action android:name="androidx.profileinstaller.action.SKIP_FILE" />
+106-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:17-85
+106-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:44:25-82
+107            </intent-filter>
+108            <intent-filter>
+108-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:46:13-48:29
+109                <action android:name="androidx.profileinstaller.action.SAVE_PROFILE" />
+109-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:17-88
+109-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:47:25-85
+110            </intent-filter>
+111            <intent-filter>
+111-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:49:13-51:29
+112                <action android:name="androidx.profileinstaller.action.BENCHMARK_OPERATION" />
+112-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:17-95
+112-->[androidx.profileinstaller:profileinstaller:1.3.1] C:\Users\Subham\.gradle\caches\9.3.1\transforms\0de2ba0491f2bae9f1ed6614804fcb6b\workspace\transformed\profileinstaller-1.3.1\AndroidManifest.xml:50:25-92
+113            </intent-filter>
+114        </receiver>
+115    </application>
+116
+117</manifest>

@@ -28,6 +28,7 @@ object Constants {
     const val EXTRA_DURATION_MINUTES = "extra_duration_minutes"
     const val EXTRA_DESTINATION_NAME = "extra_destination_name"
     const val EXTRA_FOCUS_TAG = "extra_focus_tag"
+    const val EXTRA_STRICT_MODE = "extra_strict_mode"
 
     // ── Navigation Routes ────────────────────────────────────────────
     const val ROUTE_DEPARTURE = "departure"

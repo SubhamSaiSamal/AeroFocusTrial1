@@ -9,7 +9,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.core.app.NotificationCompat
+import androidx.media.app.NotificationCompat as MediaNotificationCompat
 import com.aerofocus.app.MainActivity
 import com.aerofocus.app.util.Constants
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,11 +54,24 @@ class FlightTimerService : Service() {
     private var totalDurationMillis: Long = 0L
 
     private lateinit var notificationManager: NotificationManager
+    private var mediaSession: MediaSessionCompat? = null
 
     override fun onCreate() {
         super.onCreate()
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         createNotificationChannel()
+        setupMediaSession()
+    }
+
+    private fun setupMediaSession() {
+        mediaSession = MediaSessionCompat(this, "AeroFocusMediaSession").apply {
+            isActive = true
+            setPlaybackState(
+                PlaybackStateCompat.Builder()
+                    .setState(PlaybackStateCompat.STATE_PLAYING, 0L, 1.0f)
+                    .build()
+            )
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -78,6 +94,11 @@ class FlightTimerService : Service() {
         _remainingTimeMillis.value = 0L
         _totalDurationMillis.value = 0L
         _destinationName.value = ""
+        stopService(Intent(this, FocusEnforcerService::class.java))
+        
+        mediaSession?.isActive = false
+        mediaSession?.release()
+        
         super.onDestroy()
     }
 
@@ -87,6 +108,7 @@ class FlightTimerService : Service() {
         val durationMinutes = intent.getIntExtra(Constants.EXTRA_DURATION_MINUTES, 25)
         destinationName = intent.getStringExtra(Constants.EXTRA_DESTINATION_NAME) ?: "Unknown"
         focusTag = intent.getStringExtra(Constants.EXTRA_FOCUS_TAG) ?: ""
+        val isStrictMode = intent.getBooleanExtra(Constants.EXTRA_STRICT_MODE, false)
         totalDurationMillis = durationMinutes * 60 * 1000L
 
         // Publish to companion state
@@ -94,6 +116,11 @@ class FlightTimerService : Service() {
         _remainingTimeMillis.value = totalDurationMillis
         _destinationName.value = destinationName
         _timerState.value = TimerState.RUNNING
+
+        // Start the App Blocking Enforcer conditionally
+        if (isStrictMode) {
+            startService(Intent(this, FocusEnforcerService::class.java))
+        }
 
         // Foreground promotion — must happen within 5 seconds of startForegroundService()
         startForeground(Constants.TIMER_NOTIFICATION_ID, buildNotification())
@@ -116,6 +143,7 @@ class FlightTimerService : Service() {
     private fun handleStop() {
         tickerJob?.cancel()
         _timerState.value = TimerState.STOPPED
+        stopService(Intent(this, FocusEnforcerService::class.java))
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
@@ -233,6 +261,12 @@ class FlightTimerService : Service() {
             val progress = ((totalDurationMillis - remaining) * 100 / totalDurationMillis).toInt()
             builder.setProgress(100, progress, false)
         }
+
+        builder.setStyle(
+            MediaNotificationCompat.MediaStyle()
+                .setShowActionsInCompactView(0, 1) // Show Pause/Resume and Stop in compact view
+                .setMediaSession(mediaSession?.sessionToken)
+        )
 
         return builder.build()
     }

@@ -75,7 +75,8 @@ class TimerViewModel @Inject constructor(
     fun startFlight(
         durationMinutes: Int,
         destinationName: String,
-        focusTag: String
+        focusTag: String,
+        isStrictMode: Boolean
     ) {
         currentDurationMinutes = durationMinutes
         currentDestinationName = destinationName
@@ -87,6 +88,7 @@ class TimerViewModel @Inject constructor(
             putExtra(Constants.EXTRA_DURATION_MINUTES, durationMinutes)
             putExtra(Constants.EXTRA_DESTINATION_NAME, destinationName)
             putExtra(Constants.EXTRA_FOCUS_TAG, focusTag)
+            putExtra(Constants.EXTRA_STRICT_MODE, isStrictMode)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

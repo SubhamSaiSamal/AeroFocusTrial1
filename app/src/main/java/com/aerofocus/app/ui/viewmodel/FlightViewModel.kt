@@ -65,6 +65,9 @@ class FlightViewModel @Inject constructor(
     private val _selectedFocusTag = MutableStateFlow("Study")
     val selectedFocusTag: StateFlow<String> = _selectedFocusTag.asStateFlow()
 
+    private val _isStrictMode = MutableStateFlow(false)
+    val isStrictMode: StateFlow<Boolean> = _isStrictMode.asStateFlow()
+
     // ── Departure city (fixed as first unlocked destination) ────────
 
     private val _departureCity = MutableStateFlow("DEL")
@@ -85,6 +88,10 @@ class FlightViewModel @Inject constructor(
 
     fun setFocusTag(tag: String) {
         _selectedFocusTag.value = tag
+    }
+
+    fun setStrictMode(enabled: Boolean) {
+        _isStrictMode.value = enabled
     }
 
     /**

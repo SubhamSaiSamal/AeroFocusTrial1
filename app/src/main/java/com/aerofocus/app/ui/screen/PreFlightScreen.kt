@@ -1,5 +1,10 @@
 package com.aerofocus.app.ui.screen
 
+import android.app.AppOpsManager
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.provider.Settings
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -28,6 +33,7 @@ import androidx.compose.material.icons.filled.ConfirmationNumber
 import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockOpen
+import androidx.compose.material.icons.filled.Security
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -35,8 +41,11 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,12 +54,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.aerofocus.app.ui.components.BoardingPassCard
 import com.aerofocus.app.ui.components.CircularDurationSlider
 import com.aerofocus.app.ui.theme.DeepNight
+import com.aerofocus.app.ui.theme.MutedSunset
 import com.aerofocus.app.ui.theme.SurfaceDark
 import com.aerofocus.app.ui.theme.TextOnAccent
 import com.aerofocus.app.ui.theme.TextPrimary
@@ -77,6 +91,7 @@ fun PreFlightScreen(
     val duration by flightViewModel.selectedDuration.collectAsState()
     val selectedDest by flightViewModel.selectedDestination.collectAsState()
     val focusTag by flightViewModel.selectedFocusTag.collectAsState()
+    val isStrictMode by flightViewModel.isStrictMode.collectAsState()
     val allDestinations by flightViewModel.allDestinations.collectAsState()
     val departureCity by flightViewModel.departureCity.collectAsState()
 
@@ -85,6 +100,23 @@ fun PreFlightScreen(
 
     val departureDest = allDestinations.find { it.iataCode == departureCity }
     val selectableDestinations = allDestinations.filter { it.iataCode != departureCity }
+
+    // Check App Blocking permission
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    var hasUsageStats by remember { mutableStateOf(checkUsageStatsPermission(context)) }
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                hasUsageStats = checkUsageStatsPermission(context)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -262,35 +294,117 @@ fun PreFlightScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-            // ── Generate Ticket Button ──────────────────────────
-            val canGenerate = selectedDest != null && duration > 0
-            Button(
-                onClick = { showBoardingPass = true },
-                enabled = canGenerate,
+            // ── Strict Mode Toggle ───────────────────────────────
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
-                shape = RoundedCornerShape(50),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = WarmGlow,
-                    contentColor = TextOnAccent,
-                    disabledContainerColor = SurfaceDark,
-                    disabledContentColor = TextSecondary
-                )
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(SurfaceDark)
+                    .clickable { flightViewModel.setStrictMode(!isStrictMode) }
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Icon(
-                    imageVector = Icons.Default.ConfirmationNumber,
-                    contentDescription = null,
-                    modifier = Modifier.size(20.dp)
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Strict Mode",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = TextPrimary
+                    )
+                    Text(
+                        text = "Block distracting apps during flight",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = TextSecondary
+                    )
+                }
+                Switch(
+                    checked = isStrictMode,
+                    onCheckedChange = { flightViewModel.setStrictMode(it) },
+                    colors = SwitchDefaults.colors(
+                        checkedThumbColor = DeepNight,
+                        checkedTrackColor = WarmGlow,
+                        uncheckedThumbColor = TextSecondary,
+                        uncheckedTrackColor = SurfaceDark,
+                        uncheckedBorderColor = TextSecondary.copy(alpha = 0.3f)
+                    )
                 )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = if (canGenerate) "Generate Ticket" else "Select a Destination",
-                    style = MaterialTheme.typography.labelLarge,
-                    fontWeight = FontWeight.Bold
-                )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // ── Generate Ticket or Permission Request ───────────
+            val canGenerate = selectedDest != null && duration > 0
+
+            if (!hasUsageStats) {
+                // Focus Enforcer Permission Block
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(MutedSunset.copy(alpha = 0.1f))
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Security,
+                        contentDescription = "Security",
+                        tint = MutedSunset,
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "App Blocking Required",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MutedSunset
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "AeroFocus strictly enforces your focus flight by blocking distracting apps. Please grant Usage Access to continue.",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = TextSecondary,
+                        modifier = Modifier.padding(horizontal = 8.dp)
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = {
+                            context.startActivity(Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS))
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = MutedSunset)
+                    ) {
+                        Text("Grant Permission", color = DeepNight)
+                    }
+                }
+            } else {
+                // Normal Generate Ticket Flow
+                Button(
+                    onClick = { showBoardingPass = true },
+                    enabled = canGenerate,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp),
+                    shape = RoundedCornerShape(50),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = WarmGlow,
+                        contentColor = TextOnAccent,
+                        disabledContainerColor = SurfaceDark,
+                        disabledContentColor = TextSecondary
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ConfirmationNumber,
+                        contentDescription = null,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = if (canGenerate) "Generate Ticket" else "Select a Destination",
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -316,7 +430,8 @@ fun PreFlightScreen(
                         timerViewModel.startFlight(
                             durationMinutes = duration,
                             destinationName = dest.cityName,
-                            focusTag = focusTag
+                            focusTag = focusTag,
+                            isStrictMode = isStrictMode
                         )
                         // 2. Navigate to InFlight
                         onBoardComplete()
@@ -325,4 +440,23 @@ fun PreFlightScreen(
             }
         }
     }
+}
+
+private fun checkUsageStatsPermission(context: Context): Boolean {
+    val appOps = context.getSystemService(Context.APP_OPS_SERVICE) as AppOpsManager
+    val mode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        appOps.unsafeCheckOpNoThrow(
+            AppOpsManager.OPSTR_GET_USAGE_STATS,
+            android.os.Process.myUid(),
+            context.packageName
+        )
+    } else {
+        @Suppress("DEPRECATION")
+        appOps.checkOpNoThrow(
+            AppOpsManager.OPSTR_GET_USAGE_STATS,
+            android.os.Process.myUid(),
+            context.packageName
+        )
+    }
+    return mode == AppOpsManager.MODE_ALLOWED
 }

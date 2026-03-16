@@ -17,6 +17,12 @@
 
     <!-- Keep screen on during focus sessions -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- Haptics for aborted flights -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <!-- App Blocking usage stats permission (requires user grant via Settings) -->
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <permission
@@ -53,6 +59,12 @@
             android:enabled="true"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
+
+        <!-- App Blocking Service (runs alongside timer) -->
+        <service
+            android:name="com.aerofocus.app.service.FocusEnforcerService"
+            android:enabled="true"
+            android:exported="false" />
 
         <activity
             android:name="androidx.compose.ui.tooling.PreviewActivity"
