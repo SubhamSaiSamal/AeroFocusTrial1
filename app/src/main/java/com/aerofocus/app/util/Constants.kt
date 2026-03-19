@@ -23,6 +23,7 @@ object Constants {
     const val ACTION_PAUSE = "com.aerofocus.action.PAUSE"
     const val ACTION_RESUME = "com.aerofocus.action.RESUME"
     const val ACTION_STOP = "com.aerofocus.action.STOP"
+    const val ACTION_ABORT = "com.aerofocus.action.ABORT"
 
     // ── Service Extras ───────────────────────────────────────────────
     const val EXTRA_DURATION_MINUTES = "extra_duration_minutes"

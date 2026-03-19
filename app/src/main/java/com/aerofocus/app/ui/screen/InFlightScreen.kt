@@ -129,10 +129,13 @@ fun InFlightScreen(
                     onFlightComplete(destinationName, miles, true)
                 }
             }
-            TimerState.STOPPED -> {
+            TimerState.ABORTED -> {
                 if (hasBeenRunning) {
                     onFlightComplete(destinationName, 0, false)
                 }
+            }
+            TimerState.STOPPED -> {
+                // Ignore STOPPED for navigation, it's just a cleanup state now.
             }
             else -> { /* IDLE, PAUSED — no navigation */ }
         }

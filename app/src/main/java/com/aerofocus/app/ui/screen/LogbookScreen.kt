@@ -193,9 +193,16 @@ private fun FlightLogEntry(session: FocusSessionEntity) {
             )
 
             if (!session.wasCompleted && session.distractingPackage != null) {
+                // Parse package name (e.g. "com.instagram.android" -> "Instagram")
+                val commonSegments = setOf("com", "org", "net", "android", "google", "apps")
+                val appName = session.distractingPackage
+                    .split(".")
+                    .firstOrNull { it.lowercase() !in commonSegments }
+                    ?.replaceFirstChar { it.uppercase() } ?: session.distractingPackage
+
                 // Show the "Black Box" offending app
                 Text(
-                    text = "Distracted by: ${session.distractingPackage}",
+                    text = "Distracted by: $appName",
                     style = MaterialTheme.typography.bodySmall,
                     color = ErrorRed.copy(alpha = 0.8f),
                     maxLines = 1,

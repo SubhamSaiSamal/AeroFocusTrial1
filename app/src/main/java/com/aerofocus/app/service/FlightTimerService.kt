@@ -80,6 +80,7 @@ class FlightTimerService : Service() {
             Constants.ACTION_PAUSE -> handlePause()
             Constants.ACTION_RESUME -> handleResume()
             Constants.ACTION_STOP -> handleStop()
+            Constants.ACTION_ABORT -> handleAbort()
         }
         return START_NOT_STICKY
     }
@@ -142,7 +143,17 @@ class FlightTimerService : Service() {
 
     private fun handleStop() {
         tickerJob?.cancel()
-        _timerState.value = TimerState.STOPPED
+        if (_timerState.value != TimerState.COMPLETED) {
+            _timerState.value = TimerState.STOPPED
+        }
+        stopService(Intent(this, FocusEnforcerService::class.java))
+        stopForeground(STOP_FOREGROUND_REMOVE)
+        stopSelf()
+    }
+
+    private fun handleAbort() {
+        tickerJob?.cancel()
+        _timerState.value = TimerState.ABORTED
         stopService(Intent(this, FocusEnforcerService::class.java))
         stopForeground(STOP_FOREGROUND_REMOVE)
         stopSelf()
@@ -340,6 +351,8 @@ enum class TimerState {
     PAUSED,
     /** Timer reached zero — successful landing. */
     COMPLETED,
-    /** User triggered emergency landing or service was killed. */
-    STOPPED
+    /** Service was explicitly killed after completion. */
+    STOPPED,
+    /** User triggered emergency landing or was punished by enforcer. */
+    ABORTED
 }

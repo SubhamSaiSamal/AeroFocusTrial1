@@ -130,7 +130,7 @@ class FocusEnforcerService : Service() {
 
         // 2. Explicitly stop the timer (kills the notification)
         val stopIntent = Intent(this, FlightTimerService::class.java).apply {
-            action = Constants.ACTION_STOP
+            action = Constants.ACTION_ABORT
         }
         startService(stopIntent)
         

@@ -113,7 +113,7 @@ class TimerViewModel @Inject constructor(
      * Records the session as failed (no miles earned).
      */
     fun emergencyLand() {
-        sendServiceAction(Constants.ACTION_STOP)
+        sendServiceAction(Constants.ACTION_ABORT)
         audioPlayer.stop()
         _isAudioPlaying.value = false
         _activeTrackName.value = null
